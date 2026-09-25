@@ -1,0 +1,14 @@
+{
+  "latest_successful_run": {
+    "products_scanned": 194,
+    "reorder_products": 28,
+    "email_status": "sent"
+  },
+  "stock_rules": {
+    "critical": "0-5",
+    "low_stock": "6-10",
+    "target_stock": 20
+  },
+  "source": "DummyJSON public demo API",
+  "data_classification": "fictional demonstration data"
+}

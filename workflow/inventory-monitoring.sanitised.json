@@ -1,0 +1,1007 @@
+{
+  "name": "Inventory Monitoring – Public Template",
+  "flow": [
+    {
+      "id": 1,
+      "module": "http:MakeRequest",
+      "version": 4,
+      "parameters": {
+        "tlsType": "",
+        "authenticationType": "noAuth"
+      },
+      "mapper": {
+        "url": "https://dummyjson.com/products?select=id,title,category,price,stock,sku&sortBy=stock&order=asc",
+        "limit": "200",
+        "method": "get",
+        "shareCookies": false,
+        "parseResponse": true,
+        "allowRedirects": true,
+        "paginationType": "offsetBased",
+        "stopOnHttpError": true,
+        "paginationOutputFormat": "items",
+        "paginationRequestConfig": {
+          "offsetParamName": "skip",
+          "pageSizeParamName": "limit",
+          "initialOffsetValue": "0",
+          "pageSizeParamValue": "50"
+        },
+        "paginationResponseConfig": {
+          "itemsPath": "products"
+        },
+        "requestCompressedContent": true
+      },
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "restore": {
+          "expect": {
+            "method": {
+              "mode": "chose",
+              "label": "GET"
+            },
+            "headers": {
+              "mode": "chose"
+            },
+            "contentType": {
+              "label": "Empty"
+            },
+            "shareCookies": {
+              "mode": "chose"
+            },
+            "parseResponse": {
+              "mode": "chose"
+            },
+            "allowRedirects": {
+              "mode": "chose"
+            },
+            "paginationType": {
+              "label": "Offset-basedUse when the API requires you to specify the offset (starting position) to retrieve the next set of results."
+            },
+            "queryParameters": {
+              "mode": "chose"
+            },
+            "stopOnHttpError": {
+              "mode": "chose"
+            },
+            "paginationOutputFormat": {
+              "label": "Array of items"
+            },
+            "requestCompressedContent": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {
+            "tlsType": {
+              "label": "Empty"
+            },
+            "authenticationType": {
+              "label": "No authenticationUse when no credentials are required for the request."
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "authenticationType",
+            "type": "select",
+            "label": "Authentication type",
+            "required": true,
+            "validate": {
+              "enum": [
+                "noAuth",
+                "apiKey",
+                "basicAuth",
+                "oAuth"
+              ]
+            }
+          },
+          {
+            "name": "tlsType",
+            "type": "select",
+            "label": "Transport layer security (TLS)",
+            "validate": {
+              "enum": [
+                "mTls",
+                "tls"
+              ]
+            }
+          },
+          {
+            "name": "proxyKeychain",
+            "type": "keychain:proxy",
+            "label": "Proxy"
+          }
+        ],
+        "expect": [
+          {
+            "name": "url",
+            "type": "url",
+            "label": "URL",
+            "required": true
+          },
+          {
+            "name": "method",
+            "type": "select",
+            "label": "Method",
+            "required": true,
+            "validate": {
+              "enum": [
+                "get",
+                "head",
+                "post",
+                "put",
+                "patch",
+                "delete",
+                "options"
+              ]
+            }
+          },
+          {
+            "name": "headers",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "name",
+                  "type": "text",
+                  "label": "Name",
+                  "required": true,
+                  "validate": {
+                    "pattern": "^[-!#$%&'*+.^_`|~0-9A-Za-z]+$"
+                  }
+                },
+                {
+                  "name": "value",
+                  "type": "text",
+                  "label": "Value"
+                }
+              ],
+              "type": "collection",
+              "label": "Header"
+            },
+            "type": "array",
+            "label": "Headers"
+          },
+          {
+            "name": "queryParameters",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "name",
+                  "type": "text",
+                  "label": "Name",
+                  "required": true
+                },
+                {
+                  "name": "value",
+                  "type": "text",
+                  "label": "Value"
+                }
+              ],
+              "type": "collection",
+              "label": "Parameter"
+            },
+            "type": "array",
+            "label": "Query parameters"
+          },
+          {
+            "name": "contentType",
+            "type": "select",
+            "label": "Body content type",
+            "validate": {
+              "enum": [
+                "json",
+                "multipart",
+                "urlEncoded",
+                "custom"
+              ]
+            }
+          },
+          {
+            "name": "parseResponse",
+            "type": "boolean",
+            "label": "Parse response",
+            "required": true
+          },
+          {
+            "name": "stopOnHttpError",
+            "type": "boolean",
+            "label": "Return error if HTTP request fails",
+            "required": true
+          },
+          {
+            "name": "timeout",
+            "type": "uinteger",
+            "label": "Timeout",
+            "validate": {
+              "max": 300,
+              "min": 1
+            }
+          },
+          {
+            "name": "allowRedirects",
+            "type": "boolean",
+            "label": "Allow redirects",
+            "required": true
+          },
+          {
+            "name": "shareCookies",
+            "type": "boolean",
+            "label": "Share cookies with other HTTP modules",
+            "required": true
+          },
+          {
+            "name": "requestCompressedContent",
+            "type": "boolean",
+            "label": "Request compressed content",
+            "required": true
+          },
+          {
+            "name": "paginationType",
+            "type": "select",
+            "label": "Pagination type",
+            "validate": {
+              "enum": [
+                "offsetBased",
+                "pageBased",
+                "urlBased",
+                "tokenBased"
+              ]
+            }
+          },
+          {
+            "name": "paginationResponseConfig",
+            "spec": [
+              {
+                "name": "itemsPath",
+                "type": "text",
+                "label": "Items path"
+              }
+            ],
+            "type": "collection",
+            "label": "Pagination response config"
+          },
+          {
+            "name": "paginationRequestConfig",
+            "spec": [
+              {
+                "name": "offsetParamName",
+                "type": "text",
+                "label": "Offset parameter name",
+                "required": true
+              },
+              {
+                "name": "initialOffsetValue",
+                "type": "uinteger",
+                "label": "Initial offset value",
+                "required": true
+              },
+              {
+                "name": "pageSizeParamName",
+                "type": "text",
+                "label": "Page size parameter name"
+              },
+              {
+                "name": "pageSizeParamValue",
+                "type": "uinteger",
+                "label": "Page size parameter value"
+              }
+            ],
+            "type": "collection",
+            "label": "Pagination request config"
+          },
+          {
+            "name": "paginationOutputFormat",
+            "type": "select",
+            "label": "Output format",
+            "required": true,
+            "validate": {
+              "enum": [
+                "items",
+                "pages"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit",
+            "required": true,
+            "validate": {
+              "max": 10000,
+              "min": 1
+            }
+          }
+        ],
+        "interface": [
+          {
+            "name": "__IMTLENGTH__",
+            "type": "number",
+            "label": "Total number of bundles"
+          },
+          {
+            "name": "__IMTINDEX__",
+            "type": "number",
+            "label": "Bundle order position"
+          }
+        ],
+        "advanced": true
+      }
+    },
+    {
+      "id": 5,
+      "module": "util:SetVariables",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "scope": "roundtrip",
+        "variables": [
+          {
+            "name": "inventory_value",
+            "value": "{{1.price * 1.stock}}"
+          },
+          {
+            "name": "reorder_quantity",
+            "value": "{{if(1.stock < 20; 20 - 1.stock; 0)}}"
+          },
+          {
+            "name": "stock_status",
+            "value": "{{if(1.stock <= 5; \"Critical \"; if(1.stock <= 10; \"Low Stock\"; \"Healthy\"))}}"
+          }
+        ]
+      },
+      "metadata": {
+        "designer": {
+          "x": 600,
+          "y": 0
+        },
+        "restore": {
+          "expect": {
+            "scope": {
+              "label": "One cycle"
+            },
+            "variables": {
+              "items": [
+                null,
+                null,
+                null
+              ]
+            }
+          }
+        },
+        "expect": [
+          {
+            "name": "variables",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "name",
+                  "type": "text",
+                  "label": "Variable name",
+                  "required": true
+                },
+                {
+                  "name": "value",
+                  "type": "any",
+                  "label": "Variable value"
+                }
+              ],
+              "type": "collection",
+              "label": "Variable"
+            },
+            "type": "array",
+            "label": "Variables",
+            "validate": {
+              "unique": {
+                "by": "name"
+              },
+              "minItems": 1
+            }
+          },
+          {
+            "name": "scope",
+            "type": "select",
+            "label": "Variable lifetime",
+            "required": true,
+            "validate": {
+              "enum": [
+                "roundtrip",
+                "execution"
+              ]
+            }
+          }
+        ],
+        "interface": [
+          {
+            "name": "inventory_value",
+            "type": "any",
+            "label": "inventory_value"
+          },
+          {
+            "name": "reorder_quantity",
+            "type": "any",
+            "label": "reorder_quantity"
+          },
+          {
+            "name": "stock_status",
+            "type": "any",
+            "label": "stock_status"
+          }
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "module": "util:TextAggregator",
+      "version": 1,
+      "parameters": {
+        "feeder": 1,
+        "rowSeparator": "\n"
+      },
+      "filter": {
+        "name": "Reorder Required",
+        "conditions": [
+          [
+            {
+              "a": "{{1.stock}}",
+              "b": "10",
+              "o": "number:lessorequal"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "value": "Product: {{1.title}}\r\nSKU: {{1.sku}}\r\nCategory: {{1.category}}\r\nStock: {{1.stock}}\r\nStatus: {{5.stock_status}}\r\nReorder quantity: {{5.reorder_quantity}}\r\nInventory value: £{{5.inventory_value}}\r\n--------------------"
+      },
+      "metadata": {
+        "designer": {
+          "x": 900,
+          "y": 0
+        },
+        "restore": {
+          "extra": {
+            "feeder": {
+              "label": "HTTP - Make a request [1]"
+            }
+          },
+          "parameters": {
+            "rowSeparator": {
+              "label": "New row"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "rowSeparator",
+            "type": "select",
+            "label": "Row separator",
+            "validate": {
+              "enum": [
+                "\n",
+                "\t",
+                "other"
+              ]
+            }
+          }
+        ],
+        "expect": [
+          {
+            "name": "value",
+            "type": "text",
+            "label": "Text"
+          }
+        ],
+        "advanced": true
+      },
+      "flags": {
+        "groupBy": "{{1.`__IMTLENGTH__`}}",
+        "stopIfEmpty": true
+      }
+    },
+    {
+      "id": 7,
+      "module": "google-email:sendAnEmail",
+      "version": 4,
+      "parameters": {},
+      "mapper": {
+        "to": [
+          "inventory-alerts@example.com"
+        ],
+        "content": "<div style=\"font-family:Arial,sans-serif;max-width:700px;margin:auto;color:#222;\">\r\n  <h2 style=\"color:#b42318;\">Low-Stock Inventory Report</h2>\r\n\r\n  <p><strong>Generated:</strong>{{now}}</p>\r\n\r\n  <p>The following products require replenishment:</p>\r\n\r\n  <pre style=\"font-family:Arial,sans-serif;white-space:pre-wrap;background:#f6f6f6;padding:16px;border-radius:6px;\">{{6.text}}</pre>\r\n\r\n  <h3>Stock rules</h3>\r\n  <ul>\r\n    <li><strong>Critical:</strong> 0–5 units</li>\r\n    <li><strong>Low Stock:</strong> 6–10 units</li>\r\n    <li><strong>Target stock:</strong> 20 units</li>\r\n  </ul>\r\n\r\n  <p>Please review the suggested reorder quantities.</p>\r\n</div>",
+        "subject": "ACTION REQUIRED — Low-Stock Inventory Report",
+        "bodyType": "rawHtml"
+      },
+      "metadata": {
+        "designer": {
+          "x": 1200,
+          "y": 0
+        },
+        "restore": {
+          "expect": {
+            "cc": {
+              "mode": "chose"
+            },
+            "to": {
+              "mode": "chose",
+              "items": [
+                null
+              ]
+            },
+            "bcc": {
+              "mode": "chose"
+            },
+            "from": {
+              "mode": "chose"
+            },
+            "bodyType": {
+              "label": "Raw HTML"
+            },
+            "attachments": {
+              "mode": "chose"
+            },
+            "emailHeaders": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {}
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:google-email",
+            "label": "Connection",
+            "required": true
+          }
+        ],
+        "expect": [
+          {
+            "name": "to",
+            "spec": {
+              "name": "value",
+              "type": "email",
+              "label": "Recipient email address",
+              "required": true,
+              "validate": true
+            },
+            "type": "array",
+            "label": "To",
+            "required": true
+          },
+          {
+            "name": "subject",
+            "type": "text",
+            "label": "Subject"
+          },
+          {
+            "name": "bodyType",
+            "type": "select",
+            "label": "Body type",
+            "required": true,
+            "validate": {
+              "enum": [
+                "rawHtml",
+                "collection"
+              ]
+            }
+          },
+          {
+            "name": "attachments",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "filename",
+                  "type": "filename",
+                  "label": "File name",
+                  "required": true,
+                  "semantic": "file:name"
+                },
+                {
+                  "name": "data",
+                  "type": "buffer",
+                  "label": "Data",
+                  "required": true,
+                  "semantic": "file:data"
+                }
+              ],
+              "type": "collection",
+              "label": "Attachment"
+            },
+            "type": "array",
+            "label": "Attachments"
+          },
+          {
+            "name": "from",
+            "type": "select",
+            "label": "From"
+          },
+          {
+            "name": "cc",
+            "spec": {
+              "name": "value",
+              "type": "email",
+              "label": "Recipient email address"
+            },
+            "type": "array",
+            "label": "CC recipients"
+          },
+          {
+            "name": "bcc",
+            "spec": {
+              "name": "value",
+              "type": "email",
+              "label": "Recipient email address"
+            },
+            "type": "array",
+            "label": "BCC recipients"
+          },
+          {
+            "name": "emailHeaders",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "key",
+                  "type": "text",
+                  "label": "Key",
+                  "required": true
+                },
+                {
+                  "name": "value",
+                  "type": "text",
+                  "label": "Value"
+                }
+              ],
+              "type": "collection",
+              "label": "Email header"
+            },
+            "type": "array",
+            "label": "Additional email headers"
+          },
+          {
+            "name": "content",
+            "type": "text",
+            "label": "Content"
+          }
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "module": "google-sheets:addRow",
+      "version": 2,
+      "parameters": {},
+      "mapper": {
+        "from": "drive",
+        "mode": "select",
+        "values": {
+          "0": "{{now}}",
+          "1": "{{6.`__IMTKEY__`}}",
+          "2": "{{length(split(6.text; \"Product:\"))}}",
+          "3": "sent"
+        },
+        "sheetId": "REPLACE_WITH_SHEET_NAME",
+        "spreadsheetId": "/REPLACE_WITH_SPREADSHEET_ID",
+        "includesHeaders": true,
+        "insertDataOption": "INSERT_ROWS",
+        "useColumnHeaders": false,
+        "valueInputOption": "USER_ENTERED",
+        "insertUnformatted": false
+      },
+      "metadata": {
+        "designer": {
+          "x": 1500,
+          "y": 0
+        },
+        "restore": {
+          "expect": {
+            "from": {
+              "label": "My Drive"
+            },
+            "mode": {
+              "label": "Search by path"
+            },
+            "sheetId": {
+              "label": "Reconnect your sheet"
+            },
+            "spreadsheetId": {
+              "path": [
+                "Reconnect your spreadsheet"
+              ]
+            },
+            "includesHeaders": {
+              "label": "Yes"
+            },
+            "insertDataOption": {
+              "mode": "chose",
+              "label": "Insert rows"
+            },
+            "useColumnHeaders": {
+              "label": "No"
+            },
+            "valueInputOption": {
+              "mode": "chose",
+              "label": "User entered"
+            },
+            "insertUnformatted": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {}
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:google",
+            "label": "Connection",
+            "required": true
+          }
+        ],
+        "expect": [
+          {
+            "name": "mode",
+            "type": "select",
+            "label": "Search Method",
+            "required": true,
+            "validate": {
+              "enum": [
+                "select",
+                "fromAll",
+                "map"
+              ]
+            }
+          },
+          {
+            "name": "insertUnformatted",
+            "type": "boolean",
+            "label": "Unformatted",
+            "required": true
+          },
+          {
+            "name": "valueInputOption",
+            "type": "select",
+            "label": "Value input option",
+            "required": true,
+            "validate": {
+              "enum": [
+                "USER_ENTERED",
+                "RAW"
+              ]
+            }
+          },
+          {
+            "name": "insertDataOption",
+            "type": "select",
+            "label": "Insert data option",
+            "validate": {
+              "enum": [
+                "INSERT_ROWS",
+                "OVERWRITE"
+              ]
+            }
+          },
+          {
+            "name": "from",
+            "type": "select",
+            "label": "Drive",
+            "required": true,
+            "validate": {
+              "enum": [
+                "drive",
+                "share",
+                "team"
+              ]
+            }
+          },
+          {
+            "name": "spreadsheetId",
+            "type": "file",
+            "label": "Spreadsheet Name",
+            "required": true
+          },
+          {
+            "name": "sheetId",
+            "type": "select",
+            "label": "Sheet Name",
+            "required": true
+          },
+          {
+            "name": "includesHeaders",
+            "type": "select",
+            "label": "Table contains headers",
+            "required": true,
+            "validate": {
+              "enum": [
+                true,
+                false
+              ]
+            }
+          },
+          {
+            "name": "useColumnHeaders",
+            "type": "select",
+            "label": "Use column headers as IDs of the columns",
+            "required": true,
+            "validate": {
+              "enum": [
+                true,
+                false
+              ]
+            }
+          },
+          {
+            "name": "values",
+            "spec": [
+              {
+                "name": "0",
+                "type": "text",
+                "label": "Alert Timestamp (A)"
+              },
+              {
+                "name": "1",
+                "type": "text",
+                "label": "Products Scanned (B)"
+              },
+              {
+                "name": "2",
+                "type": "text",
+                "label": "Reorder Products (C)"
+              },
+              {
+                "name": "3",
+                "type": "text",
+                "label": "Email Status (D)"
+              },
+              {
+                "name": "4",
+                "type": "text",
+                "label": "(E)"
+              },
+              {
+                "name": "5",
+                "type": "text",
+                "label": "(F)"
+              },
+              {
+                "name": "6",
+                "type": "text",
+                "label": "(G)"
+              },
+              {
+                "name": "7",
+                "type": "text",
+                "label": "(H)"
+              },
+              {
+                "name": "8",
+                "type": "text",
+                "label": "(I)"
+              },
+              {
+                "name": "9",
+                "type": "text",
+                "label": "(J)"
+              },
+              {
+                "name": "10",
+                "type": "text",
+                "label": "(K)"
+              },
+              {
+                "name": "11",
+                "type": "text",
+                "label": "(L)"
+              },
+              {
+                "name": "12",
+                "type": "text",
+                "label": "(M)"
+              },
+              {
+                "name": "13",
+                "type": "text",
+                "label": "(N)"
+              },
+              {
+                "name": "14",
+                "type": "text",
+                "label": "(O)"
+              },
+              {
+                "name": "15",
+                "type": "text",
+                "label": "(P)"
+              },
+              {
+                "name": "16",
+                "type": "text",
+                "label": "(Q)"
+              },
+              {
+                "name": "17",
+                "type": "text",
+                "label": "(R)"
+              },
+              {
+                "name": "18",
+                "type": "text",
+                "label": "(S)"
+              },
+              {
+                "name": "19",
+                "type": "text",
+                "label": "(T)"
+              },
+              {
+                "name": "20",
+                "type": "text",
+                "label": "(U)"
+              },
+              {
+                "name": "21",
+                "type": "text",
+                "label": "(V)"
+              },
+              {
+                "name": "22",
+                "type": "text",
+                "label": "(W)"
+              },
+              {
+                "name": "23",
+                "type": "text",
+                "label": "(X)"
+              },
+              {
+                "name": "24",
+                "type": "text",
+                "label": "(Y)"
+              },
+              {
+                "name": "25",
+                "type": "text",
+                "label": "(Z)"
+              }
+            ],
+            "type": "collection",
+            "label": "Values in columns",
+            "metadata": [
+              [
+                [
+                  " Alert Timestamp",
+                  "Products Scanned",
+                  "Reorder Products",
+                  "Email Status"
+                ]
+              ]
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false,
+      "slots": null,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false,
+      "freshVariables": false
+    },
+    "designer": {
+      "orphans": []
+    },
+    "zone": "eu1.make.com",
+    "notes": []
+  }
+}
